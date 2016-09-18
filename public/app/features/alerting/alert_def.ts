@@ -1,6 +1,6 @@
 ///<reference path="../../headers/common.d.ts" />
 
-
+import _ from 'lodash';
 import {
   QueryPartDef,
   QueryPart,
@@ -38,9 +38,8 @@ var reducerTypes = [
 
 var noDataModes = [
   {text: 'OK', value: 'ok'},
-  {text: 'Critical', value: 'critical'},
-  {text: 'Warning', value: 'warning'},
-  {text: 'Unknown', value: 'unknown'},
+  {text: 'Alerting', value: 'alerting'},
+  {text: 'No Data', value: 'no_data'},
 ];
 
 function createReducerPart(model) {
@@ -48,10 +47,6 @@ function createReducerPart(model) {
   return new QueryPart(model, def);
 }
 
-var severityLevels = {
-  'critical': {text: 'Critical', iconClass: 'icon-gf icon-gf-critical', stateClass: 'alert-state-critical'},
-  'warning': {text: 'Warning', iconClass: 'icon-gf icon-gf-warning', stateClass: 'alert-state-warning'},
-};
 
 function getStateDisplayModel(state) {
   switch (state) {
@@ -62,23 +57,16 @@ function getStateDisplayModel(state) {
         stateClass: 'alert-state-ok'
       };
     }
-    case 'critical': {
+    case 'alerting': {
       return {
-        text: 'CRITICAL',
+        text: 'ALERTING',
         iconClass: 'icon-gf icon-gf-critical',
         stateClass: 'alert-state-critical'
       };
     }
-    case 'warning': {
+    case 'no_data': {
       return {
-        text: 'WARNING',
-        iconClass: 'icon-gf icon-gf-warning',
-        stateClass: 'alert-state-warning'
-      };
-    }
-    case 'unknown': {
-      return {
-        text: 'UNKNOWN',
+        text: 'NO DATA',
         iconClass: "fa fa-question",
         stateClass: 'alert-state-warning'
       };
@@ -101,13 +89,23 @@ function getStateDisplayModel(state) {
   }
 }
 
+function joinEvalMatches(matches, seperator: string) {
+  return _.reduce(matches, (res, ev)=> {
+    if (ev.Metric !== undefined && ev.Value !== undefined) {
+      res.push(ev.Metric + "=" + ev.Value);
+    }
+
+    return res;
+  }, []).join(seperator);
+}
+
 export default {
   alertQueryDef: alertQueryDef,
   getStateDisplayModel: getStateDisplayModel,
   conditionTypes: conditionTypes,
   evalFunctions: evalFunctions,
-  severityLevels: severityLevels,
   noDataModes: noDataModes,
   reducerTypes: reducerTypes,
   createReducerPart: createReducerPart,
+  joinEvalMatches: joinEvalMatches,
 };
