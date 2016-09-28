@@ -428,7 +428,7 @@ session provider you have configured.
 - **mysql:** go-sql-driver/mysql dsn config string, e.g. `user:password@tcp(127.0.0.1:3306)/database_name`
 - **postgres:** ex:  user=a password=b host=localhost port=5432 dbname=c sslmode=disable
 - **memcache:** ex:  127.0.0.1:11211
-- **redis:** ex: `addr=127.0.0.1:6379,pool_size=100,db=grafana`
+- **redis:** ex: `addr=127.0.0.1:6379,pool_size=100,prefix=grafana`
 
 If you use MySQL or Postgres as the session store you need to create the
 session table manually.
@@ -525,3 +525,9 @@ Set root url to a Grafana instance where you want to publish external snapshots 
 
 ### external_snapshot_name
 Set name for external snapshot button. Defaults to `Publish to snapshot.raintank.io`
+
+### remove expired snapshot
+Enabled to automatically remove expired snapshots
+
+### remove snapshots after 90 days
+Time to live for snapshots.
